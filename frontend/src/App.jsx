@@ -19,7 +19,7 @@ function App() {
         protocol: 'https',
         database: 'default',
         username: 'default',
-        password: 'xxxx',
+        password: 'S.sXIGSxv.l4D',
         jwt: ''
     });
 

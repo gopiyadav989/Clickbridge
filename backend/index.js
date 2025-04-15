@@ -3,13 +3,12 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 
 import clickhouseRoutes from './routes/clickhouse.js';
-import flatFileRoutes from './routes/flatfile.js';
+import flatFileRoutes from './routes/flatFile.js';
 
-dotenv.config();
+dotenv.config({ path: './backend/.env' });
 
 const app = express();
-const port = process.env.PORT || 5000;
-
+const port = process.env.PORT || 5001;
 
 // Middlewares
 app.use(cors());
@@ -17,7 +16,7 @@ app.use(express.json());
 app.use('/uploads', express.static('uploads'));
 
 // Ensure uploads directory exists
-const fs = require('fs');
+import fs from 'fs';
 if (!fs.existsSync('uploads')) {
   fs.mkdirSync('uploads');
 }
