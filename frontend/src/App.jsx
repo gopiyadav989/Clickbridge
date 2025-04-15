@@ -9,12 +9,13 @@ import ColumnSelection from './components/ColumnSelection'
 import IngestionResults from './components/IngestionResults'
 import DataPreview from './components/DataPreview'
 import IngestionProgress from './components/IngestionProgress'
+import TableCreation from './components/TableCreation'
 
 import './App.css'
 
 function App() {
     // Source selection state
-    const [source, setSource] = useState('');
+    const [source, setSource] = useState('clickhouse');
     const [target, setTarget] = useState('');
 
     // Connection state
@@ -187,6 +188,24 @@ function App() {
                     </div>
                 )
             }
+
+            {/* Table Creation (for flat file to ClickHouse) */}
+            {source === 'flatfile' && target === 'clickhouse' && selectedColumns.length > 0 && (
+                <div className="bg-white shadow-md rounded-lg p-6 mb-6">
+                    <h2 className="text-xl font-semibold mb-4">ClickHouse Table Configuration</h2>
+                    <TableCreation
+                        connectionConfig={connectionConfig}
+                        setConnectionConfig={setConnectionConfig}
+                        isConnected={isConnected}
+                        setIsConnected={setIsConnected}
+                        newTableName={newTableName}
+                        setNewTableName={setNewTableName}
+                        createTable={createTable}
+                        setCreateTable={setCreateTable}
+                        setError={setError}
+                    />
+                </div>
+            )}
 
             {/* Preview and Ingestion Controls */}
             {selectedColumns.length > 0 && (
