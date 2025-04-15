@@ -70,7 +70,8 @@ const IngestionProgress = ({
                         target: 'flatfile',
                         count: response.count,
                         filePath: response.filePath,
-                        message: response.message || `Successfully exported ${response.count} records to CSV`
+                        message: response.message || `Successfully exported ${response.count} records to CSV`,
+                        error: null
                     });
                 } else if (source === 'flatfile' && target === 'clickhouse') {
                     // Flat File to ClickHouse
@@ -91,6 +92,10 @@ const IngestionProgress = ({
                         selectedColumns,
                         createTable
                     );
+
+                    if (response.success === false) {
+                        throw new Error(response.message || 'Unknown ingestion error');
+                    }
 
                     setProgress(90);
                     setProcessingStatus('Processing completed successfully!');

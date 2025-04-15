@@ -19,7 +19,7 @@ const ColumnSelection = ({
     // Load flat file columns when needed
     useEffect(() => {
         const loadFlatFileColumns = async () => {
-            if (source === 'flatfile' && fileConfig.filePath && columns.length === 0) {
+            if (source === 'flatfile' && fileConfig.filePath) {
                 try {
                     setIsLoading(true);
                     setError('');
@@ -39,7 +39,7 @@ const ColumnSelection = ({
         };
 
         loadFlatFileColumns();
-    }, [source, fileConfig, setColumns, setError, columns.length]);
+    }, [source, fileConfig.filePath, fileConfig.delimiter, setColumns, setError]);
 
     // Handle the select all toggle
     useEffect(() => {

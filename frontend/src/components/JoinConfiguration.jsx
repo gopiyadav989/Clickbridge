@@ -7,7 +7,7 @@ const JoinConfiguration = ({ selectedTables, joinConditions, setJoinConditions }
         if (selectedTables.length < index + 2) return '';
         const firstTable = selectedTables[0];
         const secondTable = selectedTables[index + 1];
-        return `${firstTable}.id = ${secondTable}.${firstTable}_id`;
+        return `${firstTable}.id = ${secondTable}.id`;
     };
 
     // Ensure we have the correct number of join conditions initialized

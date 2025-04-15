@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import SourceSelection from './components/SourceSelection'
 import ClickHouseConnection from './components/ClickHouseConnection'
 import FlatFileUpload from './components/FlatFileUpload'
@@ -19,7 +19,6 @@ function App() {
     const [target, setTarget] = useState('');
 
     // Connection state
-    const [isConnected, setIsConnected] = useState(false);
     const [connectionConfig, setConnectionConfig] = useState({
         host: 'prb7zori4a.ap-south-1.aws.clickhouse.cloud',
         port: '8443',
@@ -29,6 +28,7 @@ function App() {
         password: 'S.sXIGSxv.l4D',
         jwt: ''
     });
+    const [isConnected, setIsConnected] = useState(false);
 
     // File state
     const [fileConfig, setFileConfig] = useState({
@@ -78,7 +78,6 @@ function App() {
         setError('');
     };
 
-
     const handleSourceChange = (newSource) => {
         resetState();
         setSource(newSource);
@@ -90,6 +89,12 @@ function App() {
             setTarget('clickhouse');
         }
     };
+
+    useEffect(() => {
+        if (results?.success) {
+            setError('');  // Clear top error bar when result is successful
+        }
+    }, [results]);
 
     return (
 
@@ -134,6 +139,8 @@ function App() {
                         setFileConfig={setFileConfig}
                         setIsConnected={setIsConnected}
                         setError={setError}
+                        setColumns={setColumns}
+                        setResults={setResults}
                     />
                     <FlatFileConfig
                         fileConfig={fileConfig}

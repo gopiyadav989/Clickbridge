@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { uploadFlatFile } from '../services/api';
 
-const FlatFileUpload = ({ setFileConfig, setIsConnected, setError }) => {
+const FlatFileUpload = ({ setFileConfig, setIsConnected, setError, setColumns, setResults }) => {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadedFile, setUploadedFile] = useState(null);
   const fileInputRef = useRef(null);
@@ -21,6 +21,9 @@ const FlatFileUpload = ({ setFileConfig, setIsConnected, setError }) => {
       setError('');
 
       const response = await uploadFlatFile(file);
+      
+      // Reset columns first to trigger a fresh load
+      setColumns([]);
       
       setUploadedFile({
         name: file.name,
@@ -46,6 +49,7 @@ const FlatFileUpload = ({ setFileConfig, setIsConnected, setError }) => {
   const handleReset = () => {
     setUploadedFile(null);
     setIsConnected(false);
+    setColumns([]);
     setFileConfig(prevConfig => ({
       ...prevConfig,
       filePath: ''
@@ -53,6 +57,7 @@ const FlatFileUpload = ({ setFileConfig, setIsConnected, setError }) => {
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
+    setResults(null);
   };
 
   return (
