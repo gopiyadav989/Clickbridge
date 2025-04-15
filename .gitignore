@@ -13,6 +13,8 @@ dist-ssr
 *.local
 uploads
 package-lock.json
+sample_data.csv
+create_users_table.sql
 
 # Editor directories and files
 .vscode/*

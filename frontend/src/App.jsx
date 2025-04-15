@@ -3,6 +3,12 @@ import SourceSelection from './components/SourceSelection'
 import ClickHouseConnection from './components/ClickHouseConnection'
 import FlatFileUpload from './components/FlatFileUpload'
 import FlatFileConfig from './components/FlatFileConfig'
+import TableSelection from './components/TableSelection'
+import JoinConfiguration from './components/JoinConfiguration'
+import ColumnSelection from './components/ColumnSelection'
+import IngestionResults from './components/IngestionResults'
+import DataPreview from './components/DataPreview'
+import IngestionProgress from './components/IngestionProgress'
 
 import './App.css'
 
@@ -135,6 +141,125 @@ function App() {
                 </div>
             )}
 
+            {/* Table Selection (for ClickHouse source) */}
+            {source === 'clickhouse' && isConnected && (
+                <div className="bg-white shadow-md rounded-lg p-6 mb-6">
+                    <h2 className="text-xl font-semibold mb-4">Select Tables</h2>
+                    <TableSelection
+                        tables={tables}
+                        selectedTables={selectedTables}
+                        setSelectedTables={setSelectedTables}
+                        setError={setError}
+                        connectionConfig={connectionConfig}
+                        setColumns={setColumns}
+                    />
+
+                    {/* Join Configuration (for multiple tables) */}
+                    {selectedTables.length > 1 && (
+                        <div className="mt-6">
+                            <h3 className="text-lg font-semibold mb-2">Configure Joins</h3>
+                            <JoinConfiguration
+                                selectedTables={selectedTables}
+                                joinConditions={joinConditions}
+                                setJoinConditions={setJoinConditions}
+                            />
+                        </div>
+                    )}
+                </div>
+            )}
+
+            {/* Column Selection */}
+            {((source === 'clickhouse' && selectedTables.length > 0) ||
+                (source === 'flatfile' && isConnected)) && (
+                    <div className="bg-white shadow-md rounded-lg p-6 mb-6">
+                        <h2 className="text-xl font-semibold mb-4">Select Columns</h2>
+                        <ColumnSelection
+                            columns={columns}
+                            selectedColumns={selectedColumns}
+                            setSelectedColumns={setSelectedColumns}
+                            source={source}
+                            fileConfig={fileConfig}
+                            connectionConfig={connectionConfig}
+                            selectedTables={selectedTables}
+                            setColumns={setColumns}
+                            setError={setError}
+                        />
+                    </div>
+                )
+            }
+
+            {/* Preview and Ingestion Controls */}
+            {selectedColumns.length > 0 && (
+                <div className="bg-white shadow-md rounded-lg p-6 mb-6">
+                    <h2 className="text-xl font-semibold mb-4">Actions</h2>
+                    <div className="flex flex-wrap gap-4">
+                        <button
+                            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 focus:outline-none"
+                            onClick={() => setShowPreview(true)}
+                            disabled={isProcessing}
+                        >
+                            Preview Data
+                        </button>
+
+                        <button
+                            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 focus:outline-none"
+                            onClick={() => setIsProcessing(true)}
+                            disabled={isProcessing}
+                        >
+                            Start Ingestion
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {/* Data Preview Modal */}
+            {showPreview && (
+                <DataPreview
+                    source={source}
+                    fileConfig={fileConfig}
+                    connectionConfig={connectionConfig}
+                    selectedTables={selectedTables}
+                    selectedColumns={selectedColumns}
+                    joinConditions={joinConditions}
+                    previewData={previewData}
+                    setPreviewData={setPreviewData}
+                    setShowPreview={setShowPreview}
+                    setError={setError}
+                />
+            )}
+
+            {/* Ingestion Progress */}
+            {isProcessing && (
+                <div className="bg-white shadow-md rounded-lg p-6 mb-6">
+                    <h2 className="text-xl font-semibold mb-4">Ingestion Progress</h2>
+                    <IngestionProgress
+                        source={source}
+                        target={target}
+                        fileConfig={fileConfig}
+                        connectionConfig={connectionConfig}
+                        selectedTables={selectedTables}
+                        selectedColumns={selectedColumns}
+                        joinConditions={joinConditions}
+                        newTableName={newTableName}
+                        createTable={createTable}
+                        progress={progress}
+                        setProgress={setProgress}
+                        processingStatus={processingStatus}
+                        setProcessingStatus={setProcessingStatus}
+                        setResults={setResults}
+                        setIsProcessing={setIsProcessing}
+                        setError={setError}
+                    />
+                </div>
+            )}
+
+            {/* Results */}
+            {results && (
+                <div className="bg-white shadow-md rounded-lg p-6 mb-6">
+                    <h2 className="text-xl font-semibold mb-4">Ingestion Results</h2>
+                    <IngestionResults results={results} />
+                </div>
+            )}
 
         </div>
 
