@@ -16,14 +16,11 @@ const TableSelection = ({
 
     // Update columns whenever selectedTables or tableColumnsMap changes
     useEffect(() => {
-        console.log('tableColumnsMap', tableColumnsMap);
         // If no tables selected, clear columns
         if (selectedTables.length === 0) {
             setColumns([]);
             return;
         }
-
-        console.log('selectedTables', selectedTables);
 
         // Build columns from all selected tables
         const allColumns = [];
@@ -52,7 +49,6 @@ const TableSelection = ({
                 setError('');
 
                 const response = await getClickHouseColumns(connectionConfig, table);
-                console.log('response', response);
 
                 if (response.success) {
                     // Store columns for this table
@@ -75,7 +71,6 @@ const TableSelection = ({
                 setSelectedTables(newSelectedTables);
             }
         } catch (error) {
-            console.error('Error loading table columns:', error);
             setError(`Failed to load table columns: ${error}`);
         } finally {
             setIsLoading(false);

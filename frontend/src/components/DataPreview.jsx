@@ -70,7 +70,6 @@ const DataPreview = ({
           }
         }
       } catch (error) {
-        console.error('Error loading preview data:', error);
         setError(`Failed to load preview data: ${error}`);
       } finally {
         setIsLoading(false);

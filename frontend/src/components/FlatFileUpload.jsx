@@ -38,7 +38,6 @@ const FlatFileUpload = ({ setFileConfig, setIsConnected, setError, setColumns, s
       
       setIsConnected(true);
     } catch (error) {
-      console.error('Upload error:', error);
       setError(`Failed to upload file: ${error}`);
       setIsConnected(false);
     } finally {

@@ -49,10 +49,6 @@ const IngestionProgress = ({
                             condition && condition.trim() !== ''
                         );
 
-                        console.log("Exporting with tables:", selectedTables);
-                        console.log("Join conditions:", validJoinConditions);
-                        console.log("Selected columns:", selectedColumns);
-
                         response = await exportJoinedClickHouseToCsv(
                             connectionConfig,
                             selectedTables,
@@ -92,10 +88,6 @@ const IngestionProgress = ({
                         selectedColumns,
                         createTable
                     );
-
-                    if (response.success === false) {
-                        throw new Error(response.message || 'Unknown ingestion error');
-                    }
 
                     setProgress(90);
                     setProcessingStatus('Processing completed successfully!');

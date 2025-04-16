@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 
 const JoinConfiguration = ({ selectedTables, joinConditions, setJoinConditions }) => {
-    console.log(selectedTables);
     // Generate examples based on the actual table names
     const generateExample = (index) => {
         if (selectedTables.length < index + 2) return '';
@@ -27,10 +26,6 @@ const JoinConfiguration = ({ selectedTables, joinConditions, setJoinConditions }
         const newJoinConditions = [...joinConditions];
         newJoinConditions[index] = value;
         setJoinConditions(newJoinConditions);
-    };
-
-    const addJoinCondition = () => {
-        setJoinConditions([...joinConditions, '']);
     };
 
     return (
@@ -59,19 +54,6 @@ const JoinConfiguration = ({ selectedTables, joinConditions, setJoinConditions }
                         </div>
                     ))}
                 </div>
-            )}
-
-            {joinConditions.length < selectedTables.length - 1 && (
-                <button
-                    type="button"
-                    onClick={addJoinCondition}
-                    className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                >
-                    <svg className="-ml-0.5 mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
-                    </svg>
-                    Add Another Join Condition
-                </button>
             )}
 
             <div className="p-3 bg-blue-50 rounded-md">

@@ -37,22 +37,11 @@ const FlatFileConfig = ({ fileConfig, setFileConfig }) => {
             />
             <span className="ml-2 text-gray-700">Semicolon (;)</span>
           </label>
-          <label className="flex items-center">
-            <input
-              type="radio"
-              name="delimiter"
-              value="\\t"
-              checked={fileConfig.delimiter === '\\t'}
-              onChange={handleDelimiterChange}
-              className="form-radio h-4 w-4 text-blue-600"
-            />
-            <span className="ml-2 text-gray-700">Tab (\\t)</span>
-          </label>
           <div className="flex items-center">
             <span className="mr-2 text-gray-700">Other:</span>
             <input
               type="text"
-              value={![',', ';', '\\t'].includes(fileConfig.delimiter) ? fileConfig.delimiter : ''}
+              value={![',', ';', '\t'].includes(fileConfig.delimiter) ? fileConfig.delimiter : ''}
               onChange={(e) => {
                 if (e.target.value) {
                   setFileConfig({
@@ -71,4 +60,4 @@ const FlatFileConfig = ({ fileConfig, setFileConfig }) => {
   );
 };
 
-export default FlatFileConfig; 
+export default FlatFileConfig;
