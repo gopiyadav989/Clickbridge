@@ -2,7 +2,7 @@ import express from 'express';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
-import { getCsvHeaders, readCsv } from '../utils/csvUtils.js';
+import { getCsvHeaders, readCsv, inferCsvColumnTypes } from '../utils/csvUtils.js';
 import createClickHouseClient from '../utils/clickhouseClient.js';
 
 const router = express.Router();
@@ -188,26 +188,26 @@ router.post('/to-clickhouse', async (req, res) => {
       // Filter headers based on selectedColumns
       const columnsToUse = headers.filter(header => selectedColumns.includes(header));
 
+      // Infer types from the CSV data
+      const dataSample = data.slice(0, 20); // Use first 20 rows for type inference
+      const inferredTypes = inferCsvColumnTypes(dataSample);
+
       try {
-        // Step 1: Create a very simple table structure
+        // Step 1: Create a table structure with inferred types
         const columnDefinitions = columnsToUse.map(col => {
           // Convert all column names to simple alphanumeric identifiers
-          // Replace spaces and special chars with underscores, avoid all quotes/backticks
-          const safeColName = col.replace(/[^a-zA-Z0-9]/g, '_');
-          return `${safeColName} String`;
+          const safeCol = col.replace(/[^a-zA-Z0-9]/g, '_');
+          // Use inferred type if available, otherwise default to String
+          const type = inferredTypes[col] || 'String';
+          return `\`${safeCol}\` ${type}`;
         }).join(', ');
 
-        // Very simple CREATE TABLE statement
         const createTableQuery = `CREATE TABLE ${database}.${tableName} (${columnDefinitions}) ENGINE = MergeTree() ORDER BY tuple()`;
+        console.log('Creating table with query:', createTableQuery);
+        await client.command({ query: createTableQuery });
+        console.log('Table created successfully');
 
-        console.log("Creating table with query:", createTableQuery);
-
-        await client.query({
-          query: createTableQuery
-        });
-        console.log("Table created successfully");
-
-        // Create mapping for column names (original CSV column name -> safe column name)
+        // Build a mapping from original column names to sanitized versions
         const columnMapping = {};
         columnsToUse.forEach(col => {
           columnMapping[col] = col.replace(/[^a-zA-Z0-9]/g, '_');
@@ -219,7 +219,7 @@ router.post('/to-clickhouse', async (req, res) => {
           selectedColumns[i] = columnMapping[originalName] || originalName;
         }
       } catch (tableError) {
-        console.error("Error creating table:", tableError);
+        console.error('Error creating table:', tableError);
         return res.status(500).json({
           success: false,
           message: `Failed to create table: ${tableError.message}`
